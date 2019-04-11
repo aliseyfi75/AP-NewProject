@@ -12,6 +12,8 @@ public class GameEngine extends Thread implements GameDataProvider {
     private boolean mouseDown = false;
     private long mouseDownFrom = 0;
     private long mouseDownTo = 0;
+    private long pauseTime = 0;
+    private boolean isPaused = false;
 
     private int mouseX = 0, mouseY = 0;
 
@@ -46,10 +48,20 @@ public class GameEngine extends Thread implements GameDataProvider {
     @Override
     public void run() {
         try {
-            previousCycleTime = System.currentTimeMillis();
+            previousCycleTime = gameEngineParams.getEngineTime(System.currentTimeMillis());
+            boolean lastCyclePaused = false;
             while (this.running) {
                 try {
-                    currentCycleTime = System.currentTimeMillis();
+                    if (isPaused) {
+                        lastCyclePaused = true;
+                        Thread.sleep(500);
+                        continue;
+                    } else if (lastCyclePaused) {
+                        long pauseDiff = System.currentTimeMillis() - this.pauseTime;
+                        this.gameEngineParams.setSystemTimeBaias(this.gameEngineParams.getSystemTimeBaias() - pauseDiff);
+                        lastCyclePaused = false;
+                    }
+                    currentCycleTime = gameEngineParams.getEngineTime(System.currentTimeMillis());
 
                     this.updateSpaceships();
                     this.updateShots();
@@ -62,7 +74,7 @@ public class GameEngine extends Thread implements GameDataProvider {
                 }
             }
         } catch (Exception e) {
-            throw e;
+//            throw e;
         }
 
     }
@@ -100,6 +112,7 @@ public class GameEngine extends Thread implements GameDataProvider {
             this.engineShots.put(engineShot.hashCode(), engineShot);
         }
     }
+
     private void createNewBomb(long time) {
         EngineBomb engineBomb = this.spaceship.bomb(time);
         if (engineBomb != null) {
@@ -109,9 +122,9 @@ public class GameEngine extends Thread implements GameDataProvider {
 
     public void setMouseDown(boolean mouseDown) {
         if (!this.mouseDown && mouseDown) {
-            this.mouseDownFrom = System.currentTimeMillis();
+            this.mouseDownFrom = this.gameEngineParams.getEngineTime(System.currentTimeMillis());
         } else if (this.mouseDown && !mouseDown) {
-            this.mouseDownTo = System.currentTimeMillis();
+            this.mouseDownTo = this.gameEngineParams.getEngineTime(System.currentTimeMillis());
         }
         this.mouseDown = mouseDown;
     }
@@ -119,12 +132,13 @@ public class GameEngine extends Thread implements GameDataProvider {
     public synchronized void mouseClicked(int x, int y) {
         this.mouseDown = false;
         this.setMouseLocation(x, y);
-        this.createNewShot(System.currentTimeMillis());
+        this.createNewShot(this.gameEngineParams.getEngineTime(System.currentTimeMillis()));
     }
+
     public synchronized void mouseRightClicked(int x, int y) {
         this.mouseDown = false;
         this.setMouseLocation(x, y);
-        this.createNewBomb(System.currentTimeMillis());
+        this.createNewBomb(this.gameEngineParams.getEngineTime(System.currentTimeMillis()));
     }
 
     public void setMouseLocation(int x, int y) {
@@ -149,5 +163,15 @@ public class GameEngine extends Thread implements GameDataProvider {
 
     public EngineSpaceship getMySpaceship() {
         return this.spaceship;
+    }
+
+    public synchronized void pauseGame() {
+        this.isPaused = true;
+        this.pauseTime = System.currentTimeMillis();
+    }
+
+    public synchronized void resumeGame() {
+        this.isPaused = false;
+        this.interrupt();
     }
 }

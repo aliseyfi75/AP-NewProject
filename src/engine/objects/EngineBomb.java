@@ -20,37 +20,22 @@ public class EngineBomb extends EngineObject {
     }
 
     public double getX(long time) {
-//        if (this.x >= gameEngineParams.getScreenWidth()/2.0)
-//            return this.x - gameEngineParams.getBombSpeed() * Math.cos(this.teta) * (Math.min(time, explotionTime) - this.initiationTime);
-//        else
-//            return this.x + gameEngineParams.getBombSpeed() * Math.cos(this.teta) * (Math.min(time, explotionTime) - this.initiationTime);
-        return this.x + gameEngineParams.getBombSpeed() * Math.cos(this.teta) * (Math.min(time, explotionTime) - this.initiationTime);
+        if (this.x >= gameEngineParams.getScreenWidth()/2.0)
+            return this.x - gameEngineParams.getBombSpeed() * Math.cos(this.teta) * (Math.min(time, explotionTime) - this.initiationTime);
+        else
+            return this.x + gameEngineParams.getBombSpeed() * Math.cos(this.teta) * (Math.min(time, explotionTime) - this.initiationTime);
     }
 
     public double getY(long time) {
-//        if (this.x >= gameEngineParams.getScreenWidth()/2.0)
-//            return this.y - gameEngineParams.getBombSpeed() * Math.sin(this.teta) * (Math.min(time, explotionTime) - this.initiationTime);
-//        else
-//            return this.y + gameEngineParams.getBombSpeed() * Math.sin(this.teta) * (Math.min(time, explotionTime) - this.initiationTime);
-        return this.y + gameEngineParams.getBombSpeed() * Math.sin(this.teta) * (Math.min(time, explotionTime) - this.initiationTime);
+        if (this.x >= gameEngineParams.getScreenWidth()/2.0)
+            return this.y - gameEngineParams.getBombSpeed() * Math.sin(this.teta) * (Math.min(time, explotionTime) - this.initiationTime);
+        else
+            return this.y + gameEngineParams.getBombSpeed() * Math.sin(this.teta) * (Math.min(time, explotionTime) - this.initiationTime);
 
     }
 
     @Override
     public boolean isDeleted(long time) {
         return time > this.explotionTime;
-    }
-
-    @Override
-    public String toString() {
-        return "EngineBomb{" +
-                "initiationTime=" + initiationTime +
-                ", x=" + x +
-                ", y=" + y +
-                ", x=" + (int) this.getX(System.currentTimeMillis()) +
-                ", y=" + (int) this.getY(System.currentTimeMillis()) +
-                ", teta=" + teta +
-                ", explotionTime=" + explotionTime +
-                '}';
     }
 }

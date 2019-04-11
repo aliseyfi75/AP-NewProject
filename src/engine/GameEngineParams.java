@@ -9,6 +9,7 @@ public class GameEngineParams {
     private double decreaseTemperatureConstant = 0.04; // temp per millis
     private double maxTemperature = 100;
     private double bombSpeed = 0.3;
+    private long systemTimeBaias = 0;
 
     public GameEngineParams() {
     }
@@ -91,5 +92,21 @@ public class GameEngineParams {
 
     public double getBombSpeed() {
         return bombSpeed;
+    }
+
+    public void setBombSpeed(double bombSpeed) {
+        this.bombSpeed = bombSpeed;
+    }
+
+    public long getSystemTimeBaias() {
+        return systemTimeBaias;
+    }
+
+    public synchronized void setSystemTimeBaias(long systemTimeBaias) {
+        this.systemTimeBaias = systemTimeBaias;
+    }
+
+    public long getEngineTime(long time){
+        return time + getSystemTimeBaias();
     }
 }

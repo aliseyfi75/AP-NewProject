@@ -36,11 +36,14 @@ public class GamePlay extends JFrame implements GameInterface {
     private HashMap<Integer, Shot> shots = new HashMap<>();
     private HashMap<Integer, Spaceship> spaceships = new HashMap<>();
     private HashMap<Integer, Bomb> bombs = new HashMap<>();
+    private GameEngineParams gameEngineParams = new GameEngineParams();
+
 
     private JLabel temperatureLabel = new JLabel("temperature = " + 0);
 
     final private int width = 1280;
     final private int height = 720;
+    private boolean isPaused = false;
 
     GamePlay() {
         init();
@@ -80,7 +83,7 @@ public class GamePlay extends JFrame implements GameInterface {
 
     @Override
     public void updateInterface(GameDataProvider gameEngine) {
-        long time = System.currentTimeMillis();
+        long time = gameEngineParams.getEngineTime(System.currentTimeMillis());
 
         Map<Integer, EngineShot> engineShots = gameEngine.getEngineShots();
         this.updateObjects(time, engineShots, this.shots);
@@ -90,8 +93,6 @@ public class GamePlay extends JFrame implements GameInterface {
 
         Map<Integer, EngineBomb> engineBombs = gameEngine.getEngineBombs();
         this.updateObjects(time, engineBombs, this.bombs);
-        System.out.println(engineBombs);
-        System.out.println(this.bombs);
 
         temperatureLabel.setText("Temperature = " + (int) gameEngine.getMySpaceship().getTemperature(time));
 
@@ -118,7 +119,7 @@ public class GamePlay extends JFrame implements GameInterface {
 
         Iterator iterator = uiObjectMap.values().iterator();
         while (iterator.hasNext()) {
-            UiObject uiObject = (UiObject)iterator.next();
+            UiObject uiObject = (UiObject) iterator.next();
             if (!updatedObjects.contains(uiObject.getReference())) {
                 panel.remove(uiObject);
                 iterator.remove();
@@ -192,8 +193,31 @@ public class GamePlay extends JFrame implements GameInterface {
         }
     }
 
+    private class PanelKeyboardListener implements KeyListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                if (GamePlay.this.isPaused) {
+                    gameEngine.resumeGame();
+                } else {
+                    gameEngine.pauseGame();
+                }
+                GamePlay.this.isPaused = !GamePlay.this.isPaused;
+            }
+        }
+    }
+
     void start() {
-        GameEngineParams gameEngineParams = new GameEngineParams();
         gameEngineParams.setScreenWidth(getWidth());
         gameEngineParams.setScreenHeight(getHeight());
 
@@ -205,6 +229,7 @@ public class GamePlay extends JFrame implements GameInterface {
         addComponentListener(new PanelComponentListener());
         addMouseMotionListener(new PanelMouseMotionListener());
         addMouseListener(new PanelMouseListener());
+        addKeyListener(new PanelKeyboardListener());
         panel.setCursor(blankCursor);
         init();
     }
