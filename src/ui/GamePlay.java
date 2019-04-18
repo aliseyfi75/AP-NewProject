@@ -230,8 +230,8 @@ public class GamePlay extends JFrame implements GameInterface {
         addMouseMotionListener(new PanelMouseMotionListener());
         addMouseListener(new PanelMouseListener());
         addKeyListener(new PanelKeyboardListener());
-        panel.setCursor(blankCursor);
         init();
+        panel.setCursor(blankCursor);
     }
 
     private void exitForm(WindowEvent e) {
