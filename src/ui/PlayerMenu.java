@@ -54,39 +54,30 @@ public class PlayerMenu extends JFrame {
         initializeButtons();
     }
 
-    public PlayerMenu(String selectedValue) {
+    PlayerMenu(String selectedValue) {
 
     }
 
     private void initializeButtons() {
         exitButton = new JButton("خروج");
         exitButton.setBounds(horizontalMargin, height - 2 * verticalMargin - buttonHeight, smallButtonWidth, buttonHeight);
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                dispose();
-            }
+        exitButton.addActionListener(e -> {
+            setVisible(false);
+            dispose();
         });
         add(exitButton);
         settingButton = new JButton("تنظیمات");
         settingButton.setBounds((width - smallButtonWidth) / 2, exitButton.getY(), smallButtonWidth, buttonHeight);
-        settingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Settings settings = new Settings(panel);
-                settings.setVisible(true);
-            }
+        settingButton.addActionListener(e -> {
+            Settings settings = new Settings(panel);
+            settings.setVisible(true);
         });
         add(settingButton);
         aboutUsButton = new JButton("درباره ما");
         aboutUsButton.setBounds(width - horizontalMargin - smallButtonWidth, exitButton.getY(), smallButtonWidth, buttonHeight);
-        aboutUsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AboutUs aboutUs = new AboutUs(panel);
-                aboutUs.setVisible(true);
-            }
+        aboutUsButton.addActionListener(e -> {
+            AboutUs aboutUs = new AboutUs(panel);
+            aboutUs.setVisible(true);
         });
         add(aboutUsButton);
         rankingButton = new JButton("رتبه بندی");
