@@ -1,5 +1,6 @@
 package engine.objects;
 
+import com.google.gson.JsonObject;
 import engine.GameEngineParams;
 
 public class EngineSpaceship extends EngineObject {

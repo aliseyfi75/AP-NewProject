@@ -1,5 +1,6 @@
 package engine.objects;
 
+import com.google.gson.JsonObject;
 import engine.GameEngineParams;
 
 public class EngineShot extends EngineObject {
@@ -27,4 +28,5 @@ public class EngineShot extends EngineObject {
     public boolean isDeleted(long time) {
         return getY(time) < -10;
     }
+
 }

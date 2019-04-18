@@ -25,7 +25,6 @@ public class StartMenu extends JFrame {
     private JButton addUserButton;
     private File file;
     private FileWriter fileWriter;
-    private JSONObject jsonObject;
 
     private ArrayList<String> usersNames;
 

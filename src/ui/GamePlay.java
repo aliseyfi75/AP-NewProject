@@ -47,6 +47,8 @@ public class GamePlay extends JFrame implements GameInterface {
 
     private Player player;
 
+    String json = "";
+
     final private int width = 1280;
     final private int height = 720;
 
@@ -141,6 +143,11 @@ public class GamePlay extends JFrame implements GameInterface {
             }
         }
     }
+
+    // saving objects
+
+//    private String saveObjects(long time, Map engineObjectMap, Map uiObjectMap) {
+//    }
 
     private class PanelMouseMotionListener implements MouseMotionListener {
 
@@ -248,6 +255,8 @@ public class GamePlay extends JFrame implements GameInterface {
 
     private void exitForm(WindowEvent e) {
         gameEngine.setRunning(false);
+
+        // saveObjects(..)
     }
 
     class MyProgressUI extends BasicProgressBarUI {
