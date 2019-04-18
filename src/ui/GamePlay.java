@@ -15,6 +15,7 @@ import ui.objects.UiObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -38,8 +39,8 @@ public class GamePlay extends JFrame implements GameInterface {
     private HashMap<Integer, Bomb> bombs = new HashMap<>();
     private GameEngineParams gameEngineParams = new GameEngineParams();
 
-
-    private JLabel temperatureLabel = new JLabel("temperature = " + 0);
+    private JProgressBar temperatureBar = new JProgressBar();
+    private JLabel bombCounter = new JLabel();
 
     final private int width = 1280;
     final private int height = 720;
@@ -74,10 +75,16 @@ public class GamePlay extends JFrame implements GameInterface {
                 exitForm(e);
             }
         });
-        temperatureLabel.setBounds(100, 100, 200, 200);
-        temperatureLabel.setForeground(Color.WHITE);
-        temperatureLabel.setHorizontalAlignment(JLabel.CENTER);
-        panel.add(temperatureLabel);
+        temperatureBar.setBounds(10, 10, 300, 20);
+        temperatureBar.setValue(0);
+        temperatureBar.setUI(new MyProgressUI());
+        temperatureBar.setForeground(Color.green);
+        panel.add(temperatureBar);
+
+        bombCounter.setText("remaining bombs : " + 3);
+        bombCounter.setBounds(100,300,300,100);
+        panel.add(bombCounter);
+
         setVisible(true);
     }
 
@@ -94,7 +101,8 @@ public class GamePlay extends JFrame implements GameInterface {
         Map<Integer, EngineBomb> engineBombs = gameEngine.getEngineBombs();
         this.updateObjects(time, engineBombs, this.bombs);
 
-        temperatureLabel.setText("Temperature = " + (int) gameEngine.getMySpaceship().getTemperature(time));
+        temperatureBar.setValue((int) gameEngine.getMySpaceship().getTemperature(time));
+        bombCounter.setText("remaining bombs : " + gameEngine.getMySpaceship().getNumberOfBombs());
 
         this.revalidate();
         this.repaint();
@@ -236,5 +244,18 @@ public class GamePlay extends JFrame implements GameInterface {
 
     private void exitForm(WindowEvent e) {
         gameEngine.setRunning(false);
+    }
+
+    class MyProgressUI extends BasicProgressBarUI {
+        Rectangle r = new Rectangle();
+        @Override
+        protected void paintIndeterminate(Graphics g, JComponent c) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+            r = getBox(r);
+            g.setColor(progressBar.getForeground());
+            g.fillOval(r.x, r.y, r.width, r.height);
+        }
     }
 }

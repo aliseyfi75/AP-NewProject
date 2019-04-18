@@ -7,6 +7,7 @@ public class EngineSpaceship extends EngineObject {
     private int y;
     private long lastShootAt = 0;
     private double lastTemperature = 0;
+    private int numberOfBombs = 5;
 
     public EngineSpaceship(GameEngineParams gameEngineParams, int x, int y) {
         super(gameEngineParams);
@@ -53,6 +54,15 @@ public class EngineSpaceship extends EngineObject {
     }
 
     public synchronized EngineBomb bomb(long time) {
-        return new EngineBomb(this.gameEngineParams, time, this.x, this.y + gameEngineParams.getSpaceShipShotBaias());
+        if (numberOfBombs > 0) {
+            numberOfBombs --;
+            return new EngineBomb(this.gameEngineParams, time, this.x, this.y + gameEngineParams.getSpaceShipShotBaias());
+        }
+        else
+            return null;
+    }
+
+    public int getNumberOfBombs() {
+        return numberOfBombs;
     }
 }
