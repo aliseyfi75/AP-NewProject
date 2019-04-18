@@ -1,5 +1,8 @@
 package ui;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 public class PlayerMenu extends JFrame {
@@ -20,6 +24,9 @@ public class PlayerMenu extends JFrame {
     private JButton exitButton;
     private JButton settingButton;
     private JButton aboutUsButton;
+    private String username;
+    private Player player;
+    private JSONObject playerJson;
 
     final private int width = 1280;
     final private int height = 720;
@@ -30,11 +37,11 @@ public class PlayerMenu extends JFrame {
     final private int smallButtonWidth = 80;
     final private int bigButtonWidth = 3 * smallButtonWidth / 2;
 
-    public PlayerMenu() {
+    public PlayerMenu(String username) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((dim.width - width) / 2, (dim.height - height) / 2, width, height);
         setTitle("Chicken Invaders");
-
+        this.username = username;
         BufferedImage myImage = null;
         try {
             myImage = ImageIO.read(new File("resources/chicken-invaders-hd-wallpaper-1280*720.png"));
@@ -51,11 +58,19 @@ public class PlayerMenu extends JFrame {
                 exitForm(e);
             }
         });
+        loadPlayerData();
         initializeButtons();
     }
 
-    PlayerMenu(String selectedValue) {
-
+    private void loadPlayerData() {
+        JSONObject playerData = null;
+        try {
+            playerData = (JSONObject) (new JSONParser().parse(new FileReader("data/players/" + username + ".json")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        player = new Player(username, playerData);
+        this.playerJson = playerData;
     }
 
     private void initializeButtons() {
@@ -85,13 +100,18 @@ public class PlayerMenu extends JFrame {
         add(rankingButton);
         newGameButton = new JButton("شروع بازی جدید");
         newGameButton.setBounds((width - bigButtonWidth) / 2, rankingButton.getY() - verticalMargin - buttonHeight, bigButtonWidth, buttonHeight);
-        newGameButton.addActionListener(e -> new GamePlay(panel).start());
+        newGameButton.addActionListener(e -> {
+            player.SetInitialLevel(playerJson);
+            new GamePlay(player, panel).start();
+        });
         add(newGameButton);
         resumeButton = new JButton("ادامه بازی");
         resumeButton.setBounds((width - bigButtonWidth) / 2, newGameButton.getY() - verticalMargin - buttonHeight, bigButtonWidth, buttonHeight);
+        resumeButton.setEnabled(player.hasResume());
+        resumeButton.addActionListener(e -> new GamePlay(player,panel).start());
         add(resumeButton);
-        welcomeLabel = new JLabel("Hello!");
-        welcomeLabel.setBounds((width - bigButtonWidth) / 2, resumeButton.getY() - verticalMargin - buttonHeight, bigButtonWidth, buttonHeight);
+        welcomeLabel = new JLabel("Hello  " + this.username);
+        welcomeLabel.setBounds((width - bigButtonWidth) / 2, resumeButton.getY() - verticalMargin - buttonHeight -350, bigButtonWidth, buttonHeight);
         welcomeLabel.setForeground(Color.WHITE);
         welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
         add(welcomeLabel);

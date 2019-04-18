@@ -1,5 +1,6 @@
 package ui;
 
+import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -23,6 +24,8 @@ public class StartMenu extends JFrame {
     private JButton deleteUserButton;
     private JButton addUserButton;
     private File file;
+    private FileWriter fileWriter;
+    private JSONObject jsonObject;
 
     private ArrayList<String> usersNames;
 
@@ -111,7 +114,7 @@ public class StartMenu extends JFrame {
         deleteUserButton.setBounds(loginButton.getX() + loginButton.getWidth() + margin, buttonHeight, buttonWidth, buttonHeight);
         deleteUserButton.addActionListener(e -> {
             if (!usersList.isSelectionEmpty()) {
-                file = new File("data/"+usersList.getSelectedValue()+".data");
+                file = new File("data/players/"+usersList.getSelectedValue()+".json");
                 if(file.delete())
                     JOptionPane.showMessageDialog(null, "کاربر با موفقیت حذف شد", "حذف کاربر", JOptionPane.WARNING_MESSAGE);
                 usersNames.remove(usersList.getSelectedIndex());
@@ -133,6 +136,13 @@ public class StartMenu extends JFrame {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+                try {
+                    fileWriter = new FileWriter("data/players/"+rep+".json");
+                    fileWriter.write("{\"Level\":0}");
+                    fileWriter.flush();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
                 usersNames.add(rep);
                 loadNamesToJList();
             }
@@ -145,20 +155,12 @@ public class StartMenu extends JFrame {
         JSONObject names = new JSONObject();
         names.put("Names", usersNames);
         PrintWriter pw = null;
-        PrintWriter writer = null;
         try {
             pw = new PrintWriter("data/game.data");
-//            for (int i=0; i<fruitBasket.size(); i++) {
-//                System.out.println(fruitBasket.get(i));
-//            }
-            writer = new PrintWriter("data/" + usersNames +".data");
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
         }
         pw.write(names.toJSONString());
-        writer.write("{\"Level\":0}");
-        writer.flush();
-        writer.close();
         pw.flush();
         pw.close();
         System.exit(0);

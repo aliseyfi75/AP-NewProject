@@ -38,4 +38,5 @@ public class EngineBomb extends EngineObject {
     public boolean isDeleted(long time) {
         return time > this.explotionTime;
     }
+
 }

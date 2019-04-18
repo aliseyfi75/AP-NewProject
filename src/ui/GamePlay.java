@@ -1,5 +1,6 @@
 package ui;
 
+import com.google.gson.Gson;
 import engine.GameDataProvider;
 import engine.GameEngine;
 import engine.GameEngineParams;
@@ -44,10 +45,13 @@ public class GamePlay extends JFrame implements GameInterface {
     private JProgressBar temperatureBar = new JProgressBar();
     private JLabel bombCounter = new JLabel();
 
+    private Player player;
+
     final private int width = 1280;
     final private int height = 720;
 
-    GamePlay(ui.myPanel panel) {
+    GamePlay(Player player, ui.myPanel panel) {
+        this.player = player;
         init();
         cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
         blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
