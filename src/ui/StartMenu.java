@@ -92,8 +92,7 @@ public class StartMenu extends JFrame {
         }
         JSONArray namesArray = (JSONArray) data.get("Names");
         usersNames = new ArrayList<>();
-        for (int i = 0; i < namesArray.size(); i++)
-            usersNames.add(namesArray.get(i).toString());
+        for (Object aNamesArray : namesArray) usersNames.add(aNamesArray.toString());
     }
 
     private void initializeButtonsPanel() {
@@ -103,42 +102,39 @@ public class StartMenu extends JFrame {
         buttonsPanel.setOpaque(false);
         loginButton = new JButton("ورود");
         loginButton.setBounds(margin / 2, buttonHeight, buttonWidth, buttonHeight);
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!usersList.isSelectionEmpty())
-                    new PlayerMenu(usersList.getSelectedValue());
-            }
+        loginButton.addActionListener(e -> {
+            if (!usersList.isSelectionEmpty())
+                new PlayerMenu(usersList.getSelectedValue());
         });
         buttonsPanel.add(loginButton);
         deleteUserButton = new JButton("حذف کاربر");
         deleteUserButton.setBounds(loginButton.getX() + loginButton.getWidth() + margin, buttonHeight, buttonWidth, buttonHeight);
-        deleteUserButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!usersList.isSelectionEmpty()) {
-                    file = new File("data/"+usersList.getSelectedValue()+".data");
-                    if(file.delete())
-                        JOptionPane.showMessageDialog(null, "کاربر با موفقیت حذف شد", "حذف کاربر", JOptionPane.WARNING_MESSAGE);
-                    System.out.println(usersList.getSelectedValue());
-                    usersNames.remove(usersList.getSelectedIndex());
-                    loadNamesToJList();
-                }
+        deleteUserButton.addActionListener(e -> {
+            if (!usersList.isSelectionEmpty()) {
+                file = new File("data/"+usersList.getSelectedValue()+".data");
+                if(file.delete())
+                    JOptionPane.showMessageDialog(null, "کاربر با موفقیت حذف شد", "حذف کاربر", JOptionPane.WARNING_MESSAGE);
+                usersNames.remove(usersList.getSelectedIndex());
+                loadNamesToJList();
             }
         });
         buttonsPanel.add(deleteUserButton);
         addUserButton = new JButton("افزودن کاربر");
         addUserButton.setBounds(deleteUserButton.getX() + deleteUserButton.getWidth() + margin, buttonHeight, buttonWidth, buttonHeight);
-        addUserButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String rep = JOptionPane.showInputDialog(null, "نام کاربری خود را وارد کنید", "کاربر جدید", JOptionPane.INFORMATION_MESSAGE);
-                if (usersNames.contains(rep))
-                    JOptionPane.showMessageDialog(null, "این کاربر قبلا وجود دارد", "کاربر تکراری", JOptionPane.WARNING_MESSAGE);
-                else if (rep != null) {
-                    usersNames.add(rep);
-                    loadNamesToJList();
+        addUserButton.addActionListener(e -> {
+            String rep = JOptionPane.showInputDialog(null, "نام کاربری خود را وارد کنید", "کاربر جدید", JOptionPane.INFORMATION_MESSAGE);
+            if (usersNames.contains(rep))
+                JOptionPane.showMessageDialog(null, "این کاربر قبلا وجود دارد", "کاربر تکراری", JOptionPane.WARNING_MESSAGE);
+            else if (rep != null) {
+                file = new File("data/players/"+rep+".json");
+                try {
+                    if(file.createNewFile())
+                        JOptionPane.showMessageDialog(null, "کاربر با موفقیت افزوده شد", "افزودن کاربر", JOptionPane.WARNING_MESSAGE);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
+                usersNames.add(rep);
+                loadNamesToJList();
             }
         });
         buttonsPanel.add(addUserButton);
