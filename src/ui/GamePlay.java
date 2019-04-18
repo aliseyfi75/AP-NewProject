@@ -28,6 +28,8 @@ import java.util.Map;
 
 public class GamePlay extends JFrame implements GameInterface {
 
+    private myPanel myPanel;
+
     private GamePanel panel;
 
     private BufferedImage cursorImg;
@@ -44,13 +46,13 @@ public class GamePlay extends JFrame implements GameInterface {
 
     final private int width = 1280;
     final private int height = 720;
-    private boolean isPaused = false;
 
-    GamePlay() {
+    GamePlay(ui.myPanel panel) {
         init();
         cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
         blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
                 cursorImg, new Point(0, 0), "blank cursor");
+        myPanel = panel;
     }
 
     private void init() {
@@ -82,7 +84,8 @@ public class GamePlay extends JFrame implements GameInterface {
         panel.add(temperatureBar);
 
         bombCounter.setText("remaining bombs : " + 3);
-        bombCounter.setBounds(100,300,300,100);
+        bombCounter.setBounds(50,600,300,100);
+        bombCounter.setForeground(Color.green);
         panel.add(bombCounter);
 
         setVisible(true);
@@ -215,12 +218,9 @@ public class GamePlay extends JFrame implements GameInterface {
         @Override
         public void keyReleased(KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                if (GamePlay.this.isPaused) {
-                    gameEngine.resumeGame();
-                } else {
-                    gameEngine.pauseGame();
-                }
-                GamePlay.this.isPaused = !GamePlay.this.isPaused;
+                gameEngine.pauseGame();
+                PauseMenu pauseMenu = new PauseMenu(panel, gameEngine, myPanel);
+                pauseMenu.setVisible(true);
             }
         }
     }

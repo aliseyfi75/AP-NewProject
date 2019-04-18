@@ -90,7 +90,7 @@ public class PlayerMenu extends JFrame {
         add(rankingButton);
         newGameButton = new JButton("شروع بازی جدید");
         newGameButton.setBounds((width - bigButtonWidth) / 2, rankingButton.getY() - verticalMargin - buttonHeight, bigButtonWidth, buttonHeight);
-        newGameButton.addActionListener(e -> new GamePlay().start());
+        newGameButton.addActionListener(e -> new GamePlay(panel).start());
         add(newGameButton);
         resumeButton = new JButton("ادامه بازی");
         resumeButton.setBounds((width - bigButtonWidth) / 2, newGameButton.getY() - verticalMargin - buttonHeight, bigButtonWidth, buttonHeight);
