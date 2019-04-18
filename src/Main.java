@@ -1,7 +1,10 @@
-import ui.PlayerMenu;
+import ui.StartMenu;
 
 public class Main {
+
     public static void main(String[] args) {
-        PlayerMenu game = new PlayerMenu();
+
+        StartMenu game = new StartMenu();
+
     }
 }
