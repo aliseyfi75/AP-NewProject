@@ -1,12 +1,8 @@
 package engine.objects;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import engine.GameEngineParams;
 
 abstract public class EngineObject {
-
-    Gson gson = new Gson();
 
     protected GameEngineParams gameEngineParams;
 
@@ -20,11 +16,6 @@ abstract public class EngineObject {
 
     public boolean isDeleted(long time) {
         return false;
-    }
-
-    public String saveObject(String json) {
-        json = json + gson.toJson(this);
-        return json;
     }
 
 }

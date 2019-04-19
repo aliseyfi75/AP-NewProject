@@ -1,6 +1,10 @@
 package engine.objects;
 
+import com.google.gson.Gson;
 import engine.GameEngineParams;
+
+import java.io.PrintStream;
+import java.util.Scanner;
 
 public class EngineBomb extends EngineObject {
     private long initiationTime;
@@ -39,5 +43,23 @@ public class EngineBomb extends EngineObject {
         return time > this.explosionTime;
     }
 
+    public void save(PrintStream p){
+        Gson gson = new Gson();
+        p.println(gson.toJson(this));
+    }
+    public static EngineBomb load(Scanner s){
+        Gson gson = new Gson();
+        return gson.fromJson(s.nextLine(), EngineBomb.class);
+    }
 
+    @Override
+    public String toString() {
+        return "EngineBomb{" +
+                "initiationTime=" + initiationTime +
+                ", x=" + x +
+                ", y=" + y +
+                ", teta=" + teta +
+                ", explosionTime=" + explosionTime +
+                '}';
+    }
 }

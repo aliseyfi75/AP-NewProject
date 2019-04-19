@@ -1,6 +1,5 @@
 package ui;
 
-import com.google.gson.Gson;
 import engine.GameDataProvider;
 import engine.GameEngine;
 import engine.GameEngineParams;
@@ -20,12 +19,8 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class GamePlay extends JFrame implements GameInterface {
 
@@ -46,8 +41,6 @@ public class GamePlay extends JFrame implements GameInterface {
     private JLabel bombCounter = new JLabel();
 
     private Player player;
-
-    String json = "";
 
     final private int width = 1280;
     final private int height = 720;
@@ -80,7 +73,11 @@ public class GamePlay extends JFrame implements GameInterface {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                exitForm(e);
+                try {
+                    exitForm(e);
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         temperatureBar.setBounds(10, 10, 300, 20);
@@ -144,11 +141,25 @@ public class GamePlay extends JFrame implements GameInterface {
         }
     }
 
-    // saving objects
+    private void saveObjects() throws FileNotFoundException {
+        File file = new File("data/players/"+this.player.getName()+".json");
+        FileOutputStream fos = new FileOutputStream(file);
+        BufferedOutputStream bos = new BufferedOutputStream(fos);
+        PrintStream p = new PrintStream(bos);
+//        p.println("{\"Level\":0}");
+        gameEngine.getMySpaceship().save(p);
+        p.flush();
+        p.close();
+    }
 
-//    private String saveObjects(long time, Map engineObjectMap, Map uiObjectMap) {
-//    }
-
+    private void loadObjects() throws IOException {
+        File file = new File("data/players/"+this.player.getName()+".json");
+        FileInputStream fis = new FileInputStream(file);
+        Scanner s = new Scanner(fis);
+        gameEngine.getMySpaceship().load(s);
+        System.out.println(gameEngine.getMySpaceship());
+        fis.close();
+    }
     private class PanelMouseMotionListener implements MouseMotionListener {
 
         @Override
@@ -253,10 +264,9 @@ public class GamePlay extends JFrame implements GameInterface {
         panel.setCursor(blankCursor);
     }
 
-    private void exitForm(WindowEvent e) {
+    private void exitForm(WindowEvent e) throws FileNotFoundException {
         gameEngine.setRunning(false);
-
-        // saveObjects(..)
+        saveObjects();
     }
 
     class MyProgressUI extends BasicProgressBarUI {

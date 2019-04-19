@@ -1,18 +1,14 @@
 package ui;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 
 public class PlayerMenu extends JFrame {
@@ -36,6 +32,7 @@ public class PlayerMenu extends JFrame {
     final private int buttonHeight = 40;
     final private int smallButtonWidth = 80;
     final private int bigButtonWidth = 3 * smallButtonWidth / 2;
+
 
     public PlayerMenu(String username) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -63,14 +60,17 @@ public class PlayerMenu extends JFrame {
     }
 
     private void loadPlayerData() {
-        JSONObject playerData = null;
+/*        JSONObject playerData = null;
         try {
-            playerData = (JSONObject) (new JSONParser().parse(new FileReader("data/players/" + username + ".json")));
+            //playerData = (JSONObject) (new JSONParser().parse(new FileReader("data/players/" + username + ".json")));
+            BufferedReader reader = new BufferedReader(new FileReader("data/players/" + username + ".json"));
+            playerData
+            System.out.println(playerData);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        player = new Player(username, playerData);
-        this.playerJson = playerData;
+        }*/
+        player = new Player(username);
+       //this.playerJson = playerData;
     }
 
     private void initializeButtons() {
@@ -101,13 +101,13 @@ public class PlayerMenu extends JFrame {
         newGameButton = new JButton("شروع بازی جدید");
         newGameButton.setBounds((width - bigButtonWidth) / 2, rankingButton.getY() - verticalMargin - buttonHeight, bigButtonWidth, buttonHeight);
         newGameButton.addActionListener(e -> {
-            player.SetInitialLevel(playerJson);
+            //player.SetInitialLevel(playerJson);
             new GamePlay(player, panel).start();
         });
         add(newGameButton);
         resumeButton = new JButton("ادامه بازی");
         resumeButton.setBounds((width - bigButtonWidth) / 2, newGameButton.getY() - verticalMargin - buttonHeight, bigButtonWidth, buttonHeight);
-        resumeButton.setEnabled(player.hasResume());
+        //resumeButton.setEnabled(player.hasResume());
         resumeButton.addActionListener(e -> new GamePlay(player,panel).start());
         add(resumeButton);
         welcomeLabel = new JLabel("Hello  " + this.username);
