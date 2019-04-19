@@ -5,7 +5,8 @@ import engine.GameEngine;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,11 +14,13 @@ import java.io.IOException;
 class PauseMenu extends JFrame {
     private GamePanel panel;
     private GamePanel PanelGame;
+    private GamePlay gamePlay;
     private myPanel playerMenuPanel;
     private JLabel welcomeLabel;
 
     private JButton resumeButton;
     private JButton exitButton;
+
 
     final private int width = 300;
     final private int height = 300;
@@ -28,7 +31,7 @@ class PauseMenu extends JFrame {
     final private int smallButtonWidth = 80;
     final private int bigButtonWidth = 3 * smallButtonWidth / 2;
 
-    PauseMenu(GamePanel lp, GameEngine gameEngine, myPanel myPanel) {
+    PauseMenu(GamePanel lp, GameEngine gameEngine, myPanel myPanel, GamePlay gamePlay) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((dim.width - width) / 2, (dim.height - height) / 2, width, height);
 
@@ -40,6 +43,7 @@ class PauseMenu extends JFrame {
         }
         panel = new GamePanel(myImage);
         PanelGame = lp;
+        this.gamePlay = gamePlay;
         setContentPane(panel);
         setResizable(false);
         setLayout(null);
@@ -56,27 +60,21 @@ class PauseMenu extends JFrame {
     private void initializeButtons(GameEngine gameEngine) {
         resumeButton = new JButton("ادامه");
         resumeButton.setBounds(horizontalMargin + 30, height - 2 * verticalMargin - 5*buttonHeight, smallButtonWidth, buttonHeight);
-        resumeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                dispose();
-                PanelGame.setVisible(true);
-                gameEngine.resumeGame();
-            }
+        resumeButton.addActionListener(e -> {
+            setVisible(false);
+            dispose();
+            PanelGame.setVisible(true);
+            gameEngine.resumeGame();
         });
         add(resumeButton);
 
         exitButton = new JButton(("خروج"));
         exitButton.setBounds(horizontalMargin + 30, height - 2 * verticalMargin - 3*buttonHeight, smallButtonWidth, buttonHeight);
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                dispose();
-                playerMenuPanel.setVisible(true);
-                PanelGame.setVisible(false);
-            }
+        exitButton.addActionListener(e -> {
+            setVisible(false);
+            dispose();
+            playerMenuPanel.setVisible(true);
+            gamePlay.dispose();
         });
         add(exitButton);
 

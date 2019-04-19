@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class PlayerMenu extends JFrame {
+class PlayerMenu extends JFrame {
     private myPanel panel;
     private JLabel welcomeLabel;
     private JButton resumeButton;
@@ -34,7 +34,7 @@ public class PlayerMenu extends JFrame {
     final private int bigButtonWidth = 3 * smallButtonWidth / 2;
 
 
-    public PlayerMenu(String username) {
+    PlayerMenu(String username) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((dim.width - width) / 2, (dim.height - height) / 2, width, height);
         setTitle("Chicken Invaders");
@@ -82,23 +82,23 @@ public class PlayerMenu extends JFrame {
         });
         add(exitButton);
         settingButton = new JButton("تنظیمات");
-        settingButton.setBounds((width - smallButtonWidth) / 2, exitButton.getY(), smallButtonWidth, buttonHeight);
+        settingButton.setBounds((width - bigButtonWidth) / 2, exitButton.getY(), bigButtonWidth, buttonHeight);
         settingButton.addActionListener(e -> {
             Settings settings = new Settings(panel);
             settings.setVisible(true);
         });
         add(settingButton);
-        aboutUsButton = new JButton("درباره ما");
-        aboutUsButton.setBounds(width - horizontalMargin - smallButtonWidth, exitButton.getY(), smallButtonWidth, buttonHeight);
+        aboutUsButton = new JButton("درباره من");
+        aboutUsButton.setBounds(width - horizontalMargin - bigButtonWidth, exitButton.getY(), bigButtonWidth, buttonHeight);
         aboutUsButton.addActionListener(e -> {
-            AboutUs aboutUs = new AboutUs(panel);
+            AboutMe aboutUs = new AboutMe(panel);
             aboutUs.setVisible(true);
         });
         add(aboutUsButton);
         rankingButton = new JButton("رتبه بندی");
         rankingButton.setBounds((width - bigButtonWidth) / 2, settingButton.getY() - verticalMargin - buttonHeight, bigButtonWidth, buttonHeight);
         add(rankingButton);
-        newGameButton = new JButton("شروع بازی جدید");
+        newGameButton = new JButton("بازی جدید");
         newGameButton.setBounds((width - bigButtonWidth) / 2, rankingButton.getY() - verticalMargin - buttonHeight, bigButtonWidth, buttonHeight);
         newGameButton.addActionListener(e -> {
             //player.SetInitialLevel(playerJson);

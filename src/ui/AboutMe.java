@@ -3,15 +3,13 @@ package ui;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class AboutUs extends JFrame {
+class AboutMe extends JFrame {
     private myPanel panel;
     private myPanel lastPanel;
     private JLabel welcomeLabel;
@@ -27,13 +25,13 @@ public class AboutUs extends JFrame {
     final private int smallButtonWidth = 80;
     final private int bigButtonWidth = 3 * smallButtonWidth / 2;
 
-    AboutUs(myPanel lp) {
+    AboutMe(myPanel lp) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((dim.width - width) / 2, (dim.height - height) / 2, width, height);
 
         BufferedImage myImage = null;
         try {
-            myImage = ImageIO.read(new File("resources/chicken-invaders-hd-wallpaper-1280*720.png"));
+            myImage = ImageIO.read(new File("resources/AboutMe.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,14 +51,11 @@ public class AboutUs extends JFrame {
 
     private void initializeButtons() {
         back = new JButton("بازگشت");
-        back.setBounds(horizontalMargin, height - 2 * verticalMargin - buttonHeight, smallButtonWidth, buttonHeight);
-        back.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                dispose();
-                lastPanel.setVisible(true);
-            }
+        back.setBounds(horizontalMargin, height - 2 * verticalMargin - buttonHeight, bigButtonWidth, buttonHeight);
+        back.addActionListener(e -> {
+            setVisible(false);
+            dispose();
+            lastPanel.setVisible(true);
         });
         add(back);
         setVisible(true);

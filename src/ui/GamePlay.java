@@ -28,6 +28,8 @@ public class GamePlay extends JFrame implements GameInterface {
 
     private GamePanel panel;
 
+    private GamePlay gamePlay;
+
     private BufferedImage cursorImg;
     private Cursor blankCursor;
     private GameEngine gameEngine;
@@ -91,6 +93,7 @@ public class GamePlay extends JFrame implements GameInterface {
         bombCounter.setForeground(Color.green);
         panel.add(bombCounter);
 
+        gamePlay = this;
         setVisible(true);
     }
 
@@ -226,7 +229,7 @@ public class GamePlay extends JFrame implements GameInterface {
         }
     }
 
-    private class PanelKeyboardListener implements KeyListener {
+    class PanelKeyboardListener implements KeyListener {
 
         @Override
         public void keyTyped(KeyEvent e) {
@@ -241,7 +244,7 @@ public class GamePlay extends JFrame implements GameInterface {
         public void keyReleased(KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 gameEngine.pauseGame();
-                PauseMenu pauseMenu = new PauseMenu(panel, gameEngine, myPanel);
+                PauseMenu pauseMenu = new PauseMenu(panel, gameEngine, myPanel, gamePlay);
                 pauseMenu.setVisible(true);
             }
         }
