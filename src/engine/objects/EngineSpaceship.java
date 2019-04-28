@@ -72,6 +72,7 @@ public class EngineSpaceship extends EngineObject {
         JSONObject jsonObject = super.toJson(time);
         jsonObject.put("Temperature", getTemperature(time));
         jsonObject.put("NumberOfBomb", getNumberOfBombs());
+        jsonObject.put("LastShootAt", lastShootAt);
         return jsonObject;
     }
 
@@ -84,5 +85,13 @@ public class EngineSpaceship extends EngineObject {
                 ", lastTemperature=" + lastTemperature +
                 ", numberOfBombs=" + numberOfBombs +
                 '}';
+    }
+
+    public void loadJSON(JSONObject spaceShip) {
+        setX((Integer) spaceShip.get("X"));
+        setY((Integer) spaceShip.get("Y"));
+        lastTemperature = (double) spaceShip.get("Temperature");
+        numberOfBombs = (int) spaceShip.get("NumberOfBomb");
+        lastShootAt = (long) spaceShip.get("LastShootAt");
     }
 }

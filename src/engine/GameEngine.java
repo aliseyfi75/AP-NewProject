@@ -3,6 +3,8 @@ package engine;
 import engine.objects.EngineBomb;
 import engine.objects.EngineShot;
 import engine.objects.EngineSpaceship;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -173,5 +175,59 @@ public class GameEngine extends Thread implements GameDataProvider {
     public synchronized void resumeGame() {
         this.isPaused = false;
         this.interrupt();
+    }
+    public JSONObject toJSON(){
+        long time = System.currentTimeMillis();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("running", running);
+        jsonObject.put("mouseDown", mouseDown);
+        jsonObject.put("mouseDownFrom", mouseDownFrom);
+        jsonObject.put("mouseDownTo", mouseDownTo);
+        jsonObject.put("pauseTime", pauseTime);
+        jsonObject.put("isPaused", isPaused);
+        jsonObject.put("mouseX", mouseX);
+        jsonObject.put("mouseY", mouseY);
+        jsonObject.put("currentCycleTime", currentCycleTime);
+        jsonObject.put("previousCycleTime", previousCycleTime);
+        jsonObject.put("Spaceship", spaceship.toJson(time));
+        jsonObject.put("Bombs", bombsTOJSON(time));
+        jsonObject.put("Shots", shotsTOJSON(time));
+        return jsonObject;
+    }
+
+    public void load(JSONObject jsonObject) {
+        JSONObject data = jsonObject;
+        running = (boolean) data.get("running");
+        mouseDown = (boolean) data.get("mouseDown");
+        mouseDownFrom = (long) data.get("mouseDownFrom");
+        mouseDownTo = (long) data.get("mouseDownTo");
+        pauseTime = (long) data.get("pauseTime");
+        isPaused = (boolean) data.get("isPaused");
+        mouseX = (int) data.get("mouseX");
+        mouseY = (int) data.get("mouseY");
+        currentCycleTime = (long) data.get("currentCycleTime");
+        previousCycleTime = (long) data.get("previousCycleTime");
+        spaceship.loadJSON((JSONObject)data.get("SpaceShip"));
+        bombsFromJSON((JSONObject)data.get("Bombs"));
+        shotsFromJSON((JSONObject)data.get("Shots"));
+    }
+
+    private JSONArray bombsTOJSON(long time) {
+        JSONArray jsonArray = new JSONArray();
+        for (Integer t : getEngineBombs().keySet()) jsonArray.add(new JSONObject().put(t, getEngineBombs().get(t)));
+        return jsonArray;
+    }
+
+    private void bombsFromJSON(JSONObject bombs){
+
+    }
+
+    private JSONArray shotsTOJSON(long time){
+        JSONArray jsonArray = new JSONArray();
+        for (Integer t : getEngineShots().keySet()) jsonArray.add(new JSONObject().put(t, getEngineShots().get(t)));
+        return jsonArray;
+    }
+
+    private void shotsFromJSON(JSONObject shots){
     }
 }

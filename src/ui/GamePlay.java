@@ -8,7 +8,6 @@ import engine.objects.EngineBomb;
 import engine.objects.EngineObject;
 import engine.objects.EngineShot;
 import engine.objects.EngineSpaceship;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import ui.objects.Bomb;
@@ -22,8 +21,14 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
 public class GamePlay extends JFrame implements GameInterface {
 
@@ -151,32 +156,12 @@ public class GamePlay extends JFrame implements GameInterface {
         File file = new File("data/players/"+this.player.getName()+".json");
         FileWriter fileWriter = new FileWriter(file);
         JSONObject jsonObject = new JSONObject();
-        long time = System.currentTimeMillis();
-        jsonObject.put("Time", time);
-        jsonObject.put("Spaceship", gameEngine.getMySpaceship().toJson(time));
-        jsonObject.put("Shots", shotsTOJSON(time));
-        jsonObject.put("Bombs", bombsTOJSON(time));
+        jsonObject.put("GameEngine", gameEngine.toJSON());
         fileWriter.write(jsonObject.toJSONString());
         fileWriter.flush();
         fileWriter.close();
-
         }
 
-    private JSONObject bombsTOJSON(long time) {
-        JSONObject jsonObject = new JSONObject();
-        for (Integer t : gameEngine.getEngineBombs().keySet()) {
-            jsonObject.put(t,gameEngine.getEngineBombs().get(t));
-        }
-        return jsonObject;
-    }
-
-    private JSONObject shotsTOJSON(long time){
-        JSONObject jsonObject = new JSONObject();
-        for (Integer t : gameEngine.getEngineShots().keySet()) {
-            jsonObject.put(t,gameEngine.getEngineShots().get(t));
-        }
-        return jsonObject;
-    }
     private void loadObjects() throws IOException {
         JSONObject data = null;
         try {
@@ -184,9 +169,8 @@ public class GamePlay extends JFrame implements GameInterface {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        JSONArray namesArray = (JSONArray) data.get("Names");
-        usersNames = new ArrayList<>();
-        for (Object aNamesArray : namesArray) usersNames.add(aNamesArray.toString());
+        JSONObject jsonObject = (JSONObject) data.get("GameEngine");
+        gameEngine.load(jsonObject);
     }
     private class PanelMouseMotionListener implements MouseMotionListener {
 
