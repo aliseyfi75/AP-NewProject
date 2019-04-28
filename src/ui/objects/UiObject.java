@@ -22,7 +22,6 @@ abstract public class UiObject extends JLabel {
         } else if (engineObject instanceof EngineBomb) {
             return new Bomb(engineObject.hashCode());
         }
-
         return null;
     }
 

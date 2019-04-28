@@ -8,6 +8,9 @@ import engine.objects.EngineBomb;
 import engine.objects.EngineObject;
 import engine.objects.EngineShot;
 import engine.objects.EngineSpaceship;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import ui.objects.Bomb;
 import ui.objects.Shot;
 import ui.objects.Spaceship;
@@ -76,8 +79,8 @@ public class GamePlay extends JFrame implements GameInterface {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    exitForm(e);
-                } catch (FileNotFoundException e1) {
+                    exitForm();
+                } catch (IOException e1) {
                     e1.printStackTrace();
                 }
             }
@@ -144,24 +147,46 @@ public class GamePlay extends JFrame implements GameInterface {
         }
     }
 
-    private void saveObjects() throws FileNotFoundException {
+    private void saveObjects() throws IOException {
         File file = new File("data/players/"+this.player.getName()+".json");
-        FileOutputStream fos = new FileOutputStream(file);
-        BufferedOutputStream bos = new BufferedOutputStream(fos);
-        PrintStream p = new PrintStream(bos);
-//        p.println("{\"Level\":0}");
-        gameEngine.getMySpaceship().save(p);
-        p.flush();
-        p.close();
+        FileWriter fileWriter = new FileWriter(file);
+        JSONObject jsonObject = new JSONObject();
+        long time = System.currentTimeMillis();
+        jsonObject.put("Time", time);
+        jsonObject.put("Spaceship", gameEngine.getMySpaceship().toJson(time));
+        jsonObject.put("Shots", shotsTOJSON(time));
+        jsonObject.put("Bombs", bombsTOJSON(time));
+        fileWriter.write(jsonObject.toJSONString());
+        fileWriter.flush();
+        fileWriter.close();
+
+        }
+
+    private JSONObject bombsTOJSON(long time) {
+        JSONObject jsonObject = new JSONObject();
+        for (Integer t : gameEngine.getEngineBombs().keySet()) {
+            jsonObject.put(t,gameEngine.getEngineBombs().get(t));
+        }
+        return jsonObject;
     }
 
+    private JSONObject shotsTOJSON(long time){
+        JSONObject jsonObject = new JSONObject();
+        for (Integer t : gameEngine.getEngineShots().keySet()) {
+            jsonObject.put(t,gameEngine.getEngineShots().get(t));
+        }
+        return jsonObject;
+    }
     private void loadObjects() throws IOException {
-        File file = new File("data/players/"+this.player.getName()+".json");
-        FileInputStream fis = new FileInputStream(file);
-        Scanner s = new Scanner(fis);
-        gameEngine.getMySpaceship().load(s);
-        System.out.println(gameEngine.getMySpaceship());
-        fis.close();
+        JSONObject data = null;
+        try {
+            data = (JSONObject) (new JSONParser().parse(new FileReader("data/players/"+this.player.getName()+".json")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        JSONArray namesArray = (JSONArray) data.get("Names");
+        usersNames = new ArrayList<>();
+        for (Object aNamesArray : namesArray) usersNames.add(aNamesArray.toString());
     }
     private class PanelMouseMotionListener implements MouseMotionListener {
 
@@ -263,11 +288,10 @@ public class GamePlay extends JFrame implements GameInterface {
         addMouseMotionListener(new PanelMouseMotionListener());
         addMouseListener(new PanelMouseListener());
         addKeyListener(new PanelKeyboardListener());
-        init();
         panel.setCursor(blankCursor);
     }
 
-    private void exitForm(WindowEvent e) throws FileNotFoundException {
+    public void exitForm() throws IOException {
         gameEngine.setRunning(false);
         saveObjects();
     }

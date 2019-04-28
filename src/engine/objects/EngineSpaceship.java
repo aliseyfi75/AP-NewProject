@@ -1,10 +1,7 @@
 package engine.objects;
 
-import com.google.gson.Gson;
 import engine.GameEngineParams;
-
-import java.io.PrintStream;
-import java.util.Scanner;
+import org.json.simple.JSONObject;
 
 public class EngineSpaceship extends EngineObject {
     private int x;
@@ -70,13 +67,12 @@ public class EngineSpaceship extends EngineObject {
         return numberOfBombs;
     }
 
-    public void save(PrintStream p){
-        Gson gson = new Gson();
-        p.println(gson.toJson(this));
-    }
-    public EngineSpaceship load(Scanner s){
-        Gson gson = new Gson();
-        return gson.fromJson(s.nextLine(), EngineSpaceship.class);
+    @Override
+    public JSONObject toJson(long time) {
+        JSONObject jsonObject = super.toJson(time);
+        jsonObject.put("Temperature", getTemperature(time));
+        jsonObject.put("NumberOfBomb", getNumberOfBombs());
+        return jsonObject;
     }
 
     @Override

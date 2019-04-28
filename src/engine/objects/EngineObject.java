@@ -1,6 +1,7 @@
 package engine.objects;
 
 import engine.GameEngineParams;
+import org.json.simple.JSONObject;
 
 abstract public class EngineObject {
 
@@ -18,4 +19,10 @@ abstract public class EngineObject {
         return false;
     }
 
+    public JSONObject toJson(long time){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("X", getX(time));
+        jsonObject.put("Y", getY(time));
+        return jsonObject;
+    }
 }

@@ -1,10 +1,7 @@
 package engine.objects;
 
-import com.google.gson.Gson;
 import engine.GameEngineParams;
-
-import java.io.PrintStream;
-import java.util.Scanner;
+import org.json.simple.JSONObject;
 
 public class EngineShot extends EngineObject {
     private long initiationTime;
@@ -27,18 +24,24 @@ public class EngineShot extends EngineObject {
         return y - this.gameEngineParams.getShotSpeed() * (time - this.initiationTime);
     }
 
+    public long getInitiationTime() {
+        return initiationTime;
+    }
+
+    public void setInitiationTime(long initiationTime) {
+        this.initiationTime = initiationTime;
+    }
+
     @Override
     public boolean isDeleted(long time) {
         return getY(time) < -10;
     }
 
-    public void save(PrintStream p){
-        Gson gson = new Gson();
-        p.println(gson.toJson(this));
-    }
-    public static EngineShot load(Scanner s) {
-        Gson gson = new Gson();
-        return gson.fromJson(s.nextLine(), EngineShot.class);
+    @Override
+    public JSONObject toJson(long time) {
+        JSONObject jsonObject = super.toJson(time);
+        jsonObject.put("InitiationTime", getInitiationTime());
+        return jsonObject;
     }
 
     @Override

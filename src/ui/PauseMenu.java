@@ -75,9 +75,13 @@ class PauseMenu extends JFrame {
             dispose();
             playerMenuPanel.setVisible(true);
             gamePlay.dispose();
+            try {
+                gamePlay.exitForm();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
         add(exitButton);
-
         setVisible(true);
 
     }
